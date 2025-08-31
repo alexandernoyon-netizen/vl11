@@ -121,10 +121,10 @@ function render(){
         fb.textContent = it.feedback[i];
         fb.className = "fb " + (correct? "ok":"bad");
         Array.from(wrap.querySelectorAll("label.opt input")).forEach(el=>el.disabled=true);
-        if(!(it.id in state.done)){
-          state.points += correct? it.points : Math.max(2, Math.round(it.points*0.2));
-          state.done[it.id] = correct? "full":"partial";
-          save();
+       if(!(it.id in state.done)){
+  state.points += correct ? 1 : 0;
+  state.done[it.id] = correct ? "full" : "none";
+  save();
         }
         nextBtn.disabled = false;
       });
