@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QUANT – S11 Interaktiv (Step-by-Step) – v2</title>
+<title>QUANT – Sitzung 11: Interaktives Modul (Step-by-Step) – v3</title>
 <style>
   :root{
     --bg:#0b1220; --card:#121826; --muted:#9aa4b2; --text:#eef2f7;
@@ -14,16 +14,13 @@
        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
        display:flex;align-items:center;justify-content:center;padding:24px}
   .shell{width:100%;max-width:900px}
-  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;gap:12px}
   h1{font-size:20px;margin:0}
   .progress{height:10px;background:#1f2937;border-radius:999px;overflow:hidden}
   .progress span{display:block;height:10px;background:linear-gradient(90deg,#38bdf8,#60a5fa);width:0%}
   .card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
         border:1px solid #1f2937;border-radius:18px;padding:20px;box-shadow:0 10px 40px rgba(2,6,23,.4)}
   .title{font-weight:800;font-size:18px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
-  .badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;
-         padding:2px 8px;border-radius:999px;border:1px solid #334155;color:var(--accent);
-         background:rgba(125,211,252,.10)}
   .subtitle{color:var(--muted);margin-bottom:14px}
   .opt{display:flex;gap:10px;align-items:center;margin:10px 0;padding:12px;border:1px solid #1f2937;border-radius:12px;cursor:pointer}
   .opt input{margin:0}
@@ -36,6 +33,9 @@
   .fb{margin-top:10px;font-size:14px}
   .ok{color:var(--ok)} .bad{color:var(--bad)}
   .muted{color:var(--muted)}
+  .badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.04em;
+         padding:2px 8px;border-radius:999px;border:1px solid #334155;color:var(--accent);
+         background:rgba(125,211,252,.10)}
 </style>
 </head>
 <body>
@@ -43,11 +43,13 @@
   <header>
     <div>
       <h1>QUANT – Sitzung 11: Interaktives Modul (Step-by-Step)</h1>
-      <div class="muted" id="meta">Punkte: <b id="points">0</b> • Aufgabe <b id="idx">1</b>/<b id="total">0</b></div>
+      <div class="muted" id="meta">Punkte: <b id="pointsLabel">0</b> • Aufgabe <b id="idxLabel">1</b>/<b id="totalLabel">0</b></div>
     </div>
-    <div style="width:260px">
+    <div style="min-width:260px">
       <div class="progress"><span id="bar"></span></div>
-      <div style="margin-top:8px;text-align:right;"><button id="resetBtn" class="secondary" onclick="resetState()" title="Fortschritt löschen und neu starten">Neu starten</button></div>
+      <div style="margin-top:8px;text-align:right;">
+        <button id="resetBtn" class="secondary" title="Fortschritt löschen und neu starten">Neu starten</button>
+      </div>
     </div>
   </header>
 
@@ -63,223 +65,35 @@
   </div>
 </div>
 
-
 <script>
-// 12 Aufgaben aus Sitzung 11 + Transfer
 const items = [
-  // 1
-  {
-    id:"se-concept",
-    type:"mc",
-    title:"Standardfehler – Konzept",
-    question:"Was beschreibt der <b>Standardfehler des Mittelwerts</b> am treffendsten?",
-    options:[
-      "Die Streuung einzelner Rohwerte in der Stichprobe.",
-      "Die erwartete Streuung von Stichprobenmittelwerten um den Populationsmittelwert.",
-      "Die Differenz zwischen Median und Mittelwert.",
-      "Die Genauigkeit der Messinstrumente."
-    ],
-    correct:1,
-    feedback:[
-      "Nicht ganz. Das ist die Standardabweichung der Rohwerte.",
-      "Richtig! Der SE ist die Streuung der Mittelwerte um μ (Stichprobenkennwerteverteilung).",
-      "Nein, das ist ein Lagemaßvergleich.",
-      "Nein, das ist Reliabilität, nicht SE."
-    ],
-    points:10
-  },
-  // 2
-  {
-    id:"clt-shape",
-    type:"tf",
-    title:"Zentraler Grenzwertsatz – Form",
-    question:"Wenn wir sehr viele gleich große Stichproben ziehen, sind deren Mittelwerte (bei moderatem n) annähernd normalverteilt – unabhängig von der Form der Grundgesamtheit.",
-    correct:true,
-    feedbackTrue:"Richtig. Das ist die Kernaussage des zentralen Grenzwertsatzes (CLT).",
-    feedbackFalse:"Falsch. Genau diese Annäherung an die Normalverteilung macht den CLT so wichtig.",
-    points:8
-  },
-  // 3
-  {
-    id:"se-n-relation",
-    type:"tf",
-    title:"SE und Stichprobengröße",
-    question:"Bei größerem n wird der Standardfehler kleiner.",
-    correct:true,
-    feedbackTrue:"Richtig. Größere Stichproben liefern präzisere Schätzungen (kleinerer SE).",
-    feedbackFalse:"Falsch. Es gilt: je größer n, desto kleiner der SE (höhere Präzision).",
-    points:8
-  },
-  // 4
-  {
-    id:"hypotheses-match",
-    type:"mc",
-    title:"Hypothesen zuordnen",
-    question:"Welche Formulierung passt korrekt zur <b>Nullhypothese (H₀)</b>?",
-    options:[
-      "Es gibt einen Unterschied zwischen Stadt- und Landbevölkerung in der Demokratiezufriedenheit.",
-      "Es gibt keinen Unterschied zwischen Stadt- und Landbevölkerung in der Demokratiezufriedenheit.",
-      "Die Stadtbevölkerung ist zufriedener als die Landbevölkerung.",
-      "Die Effektstärke ist groß (ω² ≥ .14)."
-    ],
-    correct:1,
-    feedback:[
-      "Das wäre eine Alternativhypothese (H₁).",
-      "Richtig. H₀ behauptet 'kein Unterschied/kein Effekt'.",
-      "Das ist eine gerichtete H₁-Formulierung.",
-      "Das ist eine Aussage zur Effektstärke, nicht zu H₀."
-    ],
-    points:10
-  },
-  // 5
-  {
-    id:"test-logic",
-    type:"tf",
-    title:"Testlogik – indirekter Beweis",
-    question:"In Signifikanztests prüfen wir direkt, wie wahrscheinlich H₁ ist. Wenn sie hoch ist, verwerfen wir H₀.",
-    correct:false,
-    feedbackTrue:"Nein. Wir testen nicht direkt die Wahrscheinlichkeit von H₁.",
-    feedbackFalse:"Richtig. Wir prüfen, ob die Daten unter H₀ plausibel sind (indirekter Beweis).",
-    points:8
-  },
-  // 6
-  {
-    id:"alpha-beta",
-    type:"mc",
-    title:"Fehlerarten unterscheiden",
-    question:"Welche Aussage beschreibt korrekt den <b>α-Fehler (Typ I)</b>?",
-    options:[
-      "Wir behalten H₀ bei, obwohl ein echter Effekt existiert (falsch negativ).",
-      "Wir verwerfen H₀, obwohl in Wahrheit kein Effekt existiert (falsch positiv).",
-      "Wir maximieren die Power durch Senken von α.",
-      "β ist das Signifikanzniveau und wird meist auf 5% festgelegt."
-    ],
-    correct:1,
-    feedback:[
-      "Das beschreibt den β-Fehler (Typ II).",
-      "Richtig. α-Fehler = fälschliches Verwerfen von H₀ (false positive).",
-      "Nein. α senken verringert (nicht erhöht) Power – bei gleichem n.",
-      "Falsch. α ist das Signifikanzniveau (~5%), β ist die Gegenwahrscheinlichkeit zur Power."
-    ],
-    points:10
-  },
-  // 7
-  {
-    id:"alpha-interpretation",
-    type:"tf",
-    title:"Interpretation von α",
-    question:"Wenn α = .05 festgelegt ist, bedeutet das: In 5% aller Fälle werden wir H₀ verwerfen, obwohl sie wahr ist.",
-    correct:true,
-    feedbackTrue:"Richtig. Das ist die Definition des Typ-I-Fehlers bei α = .05.",
-    feedbackFalse:"Falsch. Genau das meint α: 5% Fehlerrate beim fälschlichen Verwerfen von H₀.",
-    points:8
-  },
-  // 8 (Transfer)
-  {
-    id:"transfer-se-doubling-n",
-    transfer:true,
-    type:"mc",
-    title:"Transfer: Effekt von n auf den SE",
-    question:"Sie verdoppeln die Stichprobengröße von n=50 auf n=100 (gleiche Populationsstreuung). Was passiert <i>idealisiert</i> mit dem SE des Mittelwerts?",
-    options:[
-      "Er halbiert sich.",
-      "Er bleibt gleich.",
-      "Er verringert sich um den Faktor √2.",
-      "Er verdoppelt sich."
-    ],
-    correct:2,
-    feedback:[
-      "Nicht korrekt. Halbierung träfe zu, wenn SE ∝ 1/n wäre.",
-      "Nein. Größeres n verringert den SE.",
-      "Richtig. SE ∝ 1/√n → Verdopplung von n senkt SE um √2.",
-      "Nein. Das Gegenteil ist der Fall."
-    ],
-    points:12
-  },
-  // 9 (Transfer)
-  {
-    id:"anova-context",
-    transfer:true,
-    type:"tf",
-    title:"ANOVA – Einsatzbereich",
-    question:"Eine einfaktorielle ANOVA ist ein Verfahren zum Vergleich von Mittelwerten, wenn mehr als zwei Gruppen betrachtet werden.",
-    correct:true,
-    feedbackTrue:"Richtig. Bei >2 Gruppen ist ANOVA das Standardverfahren (statt mehrere t-Tests).",
-    feedbackFalse:"Falsch. Genau dafür ist die ANOVA gedacht.",
-    points:8
-  },
-  // 10 (Transfer Anwendung Demokratiezufriedenheit)
-  {
-    id:"democracy-hypothesis",
-    transfer:true,
-    type:"mc",
-    title:"Anwendung: Demokratiezufriedenheit",
-    question:"Welche Formulierung ist eine passende <b>statistische</b> Alternativhypothese (H₁) im Beispiel <i>Stadt vs. Land</i>?",
-    options:[
-      "μ_Stadt = μ_Land",
-      "μ_Stadt ≠ μ_Land",
-      "Die Stadtbevölkerung ist zufriedener, weil sie besseren ÖPNV hat.",
-      "ω² = 0"
-    ],
-    correct:1,
-    feedback:[
-      "Das ist H₀ (Gleichheit).",
-      "Richtig. Unterschied der Mittelwerte (ungerichtet).",
-      "Das ist eine kausale Begründung, keine statistische Hypothese.",
-      "Das ist eine Aussage über Effektstärke, nicht die Hypothese."
-    ],
-    points:10
-  },
-  // 11 (Effektstärke)
-  {
-    id:"effectsize-omega2",
-    type:"mc",
-    title:"Effektstärke ω² interpretieren",
-    question:"Ein Studienergebnis berichtet ω² = 0.012. Wie wäre das nach gängigen Richtwerten zu interpretieren?",
-    options:[
-      "Kein Effekt (immer 0 = kein Effekt).",
-      "Kleiner Effekt.",
-      "Mittlerer Effekt.",
-      "Großer Effekt."
-    ],
-    correct:1,
-    feedback:[
-      "Nein. ω² exakt 0 wäre 'kein Effekt'. 0.012 ist >0.",
-      "Richtig. Daumenregel: klein ≈ 0.01, mittel ≈ 0.06, groß ≈ 0.14.",
-      "Nein. Dafür wäre ω² ≈ 0.06.",
-      "Nein. Dafür wäre ω² ≈ 0.14 oder größer."
-    ],
-    points:10
-  },
-  // 12 (Diagramm-Bias)
-  {
-    id:"chart-mislead",
-    type:"tf",
-    title:"Diagrammbetrug – Skalierung",
-    question:"Eine stark gestauchte y-Achse kann scheinbar große Unterschiede klein wirken lassen (und umgekehrt).",
-    correct:true,
-    feedbackTrue:"Richtig. Achsenskalierung kann Wahrnehmung stark verzerren – kritisch prüfen.",
-    feedbackFalse:"Falsch. Genau das ist ein klassischer Trick visueller Verzerrung.",
-    points:8
-  }
+  {"id":"se-concept","type":"mc","title":"Standardfehler – Konzept","question":"Was beschreibt der <b>Standardfehler des Mittelwerts</b> am treffendsten?","options":["Die Streuung einzelner Rohwerte in der Stichprobe.","Die erwartete Streuung von Stichprobenmittelwerten um den Populationsmittelwert.","Die Differenz zwischen Median und Mittelwert.","Die Genauigkeit der Messinstrumente."],"correct":1,"feedback":["Nicht ganz. Das ist die Standardabweichung der Rohwerte.","Richtig! Der SE ist die Streuung der Mittelwerte um μ (Stichprobenkennwerteverteilung).","Nein, das ist ein Lagemaßvergleich.","Nein, das ist Reliabilität, nicht SE."],"points":10},
+  {"id":"clt-shape","type":"tf","title":"Zentraler Grenzwertsatz – Form","question":"Wenn wir sehr viele gleich große Stichproben ziehen, sind deren Mittelwerte (bei moderatem n) annähernd normalverteilt – unabhängig von der Form der Grundgesamtheit.","correct":true,"feedbackTrue":"Richtig. Das ist die Kernaussage des zentralen Grenzwertsatzes (CLT).","feedbackFalse":"Falsch. Genau diese Annäherung an die Normalverteilung macht den CLT so wichtig.","points":8},
+  {"id":"se-n-relation","type":"tf","title":"SE und Stichprobengröße","question":"Bei größerem n wird der Standardfehler kleiner.","correct":true,"feedbackTrue":"Richtig. Größere Stichproben liefern präzisere Schätzungen (kleinerer SE).","feedbackFalse":"Falsch. Es gilt: je größer n, desto kleiner der SE (höhere Präzision).","points":8},
+  {"id":"hypotheses-match","type":"mc","title":"Hypothesen zuordnen","question":"Welche Formulierung passt korrekt zur <b>Nullhypothese (H₀)</b>?","options":["Es gibt einen Unterschied zwischen Stadt- und Landbevölkerung in der Demokratiezufriedenheit.","Es gibt keinen Unterschied zwischen Stadt- und Landbevölkerung in der Demokratiezufriedenheit.","Die Stadtbevölkerung ist zufriedener als die Landbevölkerung.","Die Effektstärke ist groß (ω² ≥ .14)."],"correct":1,"feedback":["Das wäre eine Alternativhypothese (H₁).","Richtig. H₀ behauptet 'kein Unterschied/kein Effekt'.","Das ist eine gerichtete H₁-Formulierung.","Das ist eine Aussage zur Effektstärke, nicht zu H₀."],"points":10},
+  {"id":"test-logic","type":"tf","title":"Testlogik – indirekter Beweis","question":"In Signifikanztests prüfen wir direkt, wie wahrscheinlich H₁ ist. Wenn sie hoch ist, verwerfen wir H₀.","correct":false,"feedbackTrue":"Nein. Wir testen nicht direkt die Wahrscheinlichkeit von H₁.","feedbackFalse":"Richtig. Wir prüfen, ob die Daten unter H₀ plausibel sind (indirekter Beweis).","points":8},
+  {"id":"alpha-beta","type":"mc","title":"Fehlerarten unterscheiden","question":"Welche Aussage beschreibt korrekt den <b>α-Fehler (Typ I)</b>?","options":["Wir behalten H₀ bei, obwohl ein echter Effekt existiert (falsch negativ).","Wir verwerfen H₀, obwohl in Wahrheit kein Effekt existiert (falsch positiv).","Wir maximieren die Power durch Senken von α.","β ist das Signifikanzniveau und wird meist auf 5% festgelegt."],"correct":1,"feedback":["Das beschreibt den β-Fehler (Typ II).","Richtig. α-Fehler = fälschliches Verwerfen von H₀ (false positive).","Nein. α senken verringert (nicht erhöht) Power – bei gleichem n.","Falsch. α ist das Signifikanzniveau (~5%), β ist die Gegenwahrscheinlichkeit zur Power."],"points":10},
+  {"id":"alpha-interpretation","type":"tf","title":"Interpretation von α","question":"Wenn α = .05 festgelegt ist, bedeutet das: In 5% aller Fälle werden wir H₀ verwerfen, obwohl sie wahr ist.","correct":true,"feedbackTrue":"Richtig. Das ist die Definition des Typ-I-Fehlers bei α = .05.","feedbackFalse":"Falsch. Genau das meint α: 5% Fehlerrate beim fälschlichen Verwerfen von H₀.","points":8},
+  {"id":"transfer-se-doubling-n","type":"mc","title":"Transfer: Effekt von n auf den SE","question":"Sie verdoppeln die Stichprobengröße von n=50 auf n=100 (gleiche Populationsstreuung). Was passiert <i>idealisiert</i> mit dem SE des Mittelwerts?","options":["Er halbiert sich.","Er bleibt gleich.","Er verringert sich um den Faktor √2.","Er verdoppelt sich."],"correct":2,"feedback":["Nicht korrekt. Halbierung träfe zu, wenn SE ∝ 1/n wäre.","Nein. Größeres n verringert den SE.","Richtig. SE ∝ 1/√n → Verdopplung von n senkt SE um √2.","Nein. Das Gegenteil ist der Fall."],"points":12,"transfer":true},
+  {"id":"anova-context","type":"tf","title":"ANOVA – Einsatzbereich","question":"Eine einfaktorielle ANOVA ist ein Verfahren zum Vergleich von Mittelwerten, wenn mehr als zwei Gruppen betrachtet werden.","correct":true,"feedbackTrue":"Richtig. Bei >2 Gruppen ist ANOVA das Standardverfahren (statt mehrere t-Tests).","feedbackFalse":"Falsch. Genau dafür ist die ANOVA gedacht.","points":8,"transfer":true},
+  {"id":"democracy-hypothesis","type":"mc","title":"Anwendung: Demokratiezufriedenheit","question":"Welche Formulierung ist eine passende <b>statistische</b> Alternativhypothese (H₁) im Beispiel <i>Stadt vs. Land</i>?","options":["μ_Stadt = μ_Land","μ_Stadt ≠ μ_Land","Die Stadtbevölkerung ist zufriedener, weil sie besseren ÖPNV hat.","ω² = 0"],"correct":1,"feedback":["Das ist H₀ (Gleichheit).","Richtig. Unterschied der Mittelwerte (ungerichtet).","Das ist eine kausale Begründung, keine statistische Hypothese.","Das ist eine Aussage über Effektstärke, nicht die Hypothese."],"points":10,"transfer":true},
+  {"id":"effectsize-omega2","type":"mc","title":"Effektstärke ω² interpretieren","question":"Ein Studienergebnis berichtet ω² = 0.012. Wie wäre das nach gängigen Richtwerten zu interpretieren?","options":["Kein Effekt (immer 0 = kein Effekt).","Kleiner Effekt.","Mittlerer Effekt.","Großer Effekt."],"correct":1,"feedback":["Nein. ω² exakt 0 wäre 'kein Effekt'. 0.012 ist >0.","Richtig. Daumenregel: klein ≈ 0.01, mittel ≈ 0.06, groß ≈ 0.14.","Nein. Dafür wäre ω² ≈ 0.06.","Nein. Dafür wäre ω² ≈ 0.14 oder größer."],"points":10},
+  {"id":"chart-mislead","type":"tf","title":"Diagrammbetrug – Skalierung","question":"Eine stark gestauchte y-Achse kann scheinbar große Unterschiede klein wirken lassen (und umgekehrt).","correct":true,"feedbackTrue":"Richtig. Achsenskalierung kann Wahrnehmung stark verzerren – kritisch prüfen.","feedbackFalse":"Falsch. Genau das ist ein klassischer Trick visueller Verzerrung.","points":8}
 ];
 
 const TOTAL_POINTS = items.reduce((s, it) => s + (it.points || 0), 0);
+const LS_KEY = "s11_step_state_v3";
 
-let state = JSON.parse(localStorage.getItem("s11_step_state_v2") || "{}");
+let state = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
 if(!state.idx && state.idx!==0){ state = { idx:0, points:0, done:{} }; }
 
-function save(){ localStorage.setItem("s11_step_state_v2", JSON.stringify(state)); }
-function setBar(){/* unchanged */}
-        
-function resetState(){
-  try{
-    localStorage.removeItem("s11_step_state_v2");
-  }catch(e){}
-  state = { idx:0, points:0, done:{} };
-  save();
-  render();
-  alert("Zurückgesetzt. Viel Erfolg beim neuen Durchlauf!");
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function setBar(){
+  const pct = Math.round((state.idx)/items.length*100);
+  document.getElementById("bar").style.width = pct+"%";
+  document.getElementById("pointsLabel").textContent = `${state.points} / ${TOTAL_POINTS}`;
+  document.getElementById("idxLabel").textContent = Math.min(state.idx+1, items.length);
+  document.getElementById("totalLabel").textContent = items.length;
 }
 
 function render(){
@@ -354,8 +168,17 @@ document.getElementById("prevBtn").addEventListener("click", ()=>{
   if(state.idx>0){ state.idx--; save(); render(); }
 });
 
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("Fortschritt wirklich löschen und neu starten?")){
+    localStorage.removeItem(LS_KEY);
+    state = { idx:0, points:0, done:{} };
+    save();
+    render();
+    alert("Zurückgesetzt. Viel Erfolg beim neuen Durchlauf!");
+  }
+});
+
 render();
 </script>
-
 </body>
 </html>
